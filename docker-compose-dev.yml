@@ -195,93 +195,13 @@ services:
       org.chrisproject.role: "pman"
 
   chris_ui:
-    image: ghcr.io/fnndsc/chris_ui:Folders-Links
+    image: ghcr.io/fnndsc/chris_ui:staging
     command: sirv --host --single
     environment:
       REACT_APP_CHRIS_UI_URL: http://localhost:8000/api/v1/
       REACT_APP_PFDCM_URL: http://localhost:4005/
     ports:
       - "8020:3000"
-
-  orthanc:
-    image: docker.io/jodogne/orthanc-plugins:1.12.3
-    volumes:
-      - ./orthanc.json:/etc/orthanc/orthanc.json:ro
-      - orthanc:/var/lib/orthanc/db
-    ports:
-      - "4242:4242"
-      - "8042:8042"
-    networks:
-      - pacs
-    profiles:
-      - pacs
-      - orthanc
-
-  pfdcm:
-    image: ghcr.io/fnndsc/pfdcm:3.1.22
-    container_name: pfdcm
-    environment:
-      MAX_WORKERS: 1
-    volumes:
-      - pfdcm:/home/dicom:rw
-      - ./pfdcm-services:/home/dicom/services:ro
-      - chris_files:/chris_files:rw
-    ports:
-      - "4005:4005"
-    networks:
-      - pacs
-    user: "1001"
-    profiles:
-      - pacs
-  pfbridge:
-    image: docker.io/fnndsc/pfbridge:3.7.8
-    container_name: pfbridge
-    environment:
-      MAX_WORKERS: 1
-      PFLINK_USERNAME: pflink
-      PFLINK_PASSWORD: pflink1234
-      NAME: PFDCMLOCAL
-      PACSNAME: orthanc
-      CUBEANDSWIFTKEY: local
-    ports:
-      - "33333:33333"
-    networks:
-      local:
-      pflink:
-    profiles:
-      - pflink
-
-  pflink:
-    image: docker.io/fnndsc/pflink:4.0.6
-    container_name: pflink
-    restart: unless-stopped
-    environment:
-      PFDCM_NAME: "NOTPFDCMLOCAL" # work around for hard-coded edge case
-      PFLINK_MONGODB: "mongodb://pflink-db:27017"
-      PFLINK_PFDCM: "http://pfdcm:4005"
-      PFLINK_PORT: "4010"
-    ports:
-      - "4010:4010"
-    networks:
-      local:
-      pflink:
-    depends_on:
-      - pflink-db
-    profiles:
-      - pflink
-
-  pflink-db:
-    image: mongo
-    environment:
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - pflink-db-data:/data/db
-    restart: unless-stopped
-    networks:
-      pflink:
-    profiles:
-      - pflink
 
   # Non-root container user workarounds
 
@@ -293,26 +213,10 @@ services:
     command: chmod g+rwx /data
     restart: "no"
 
-  pfdcm-nonroot-user-volume-fix:
-    image: docker.io/library/alpine:latest
-    volumes:
-      - pfdcm:/home/dicom:rw
-    user: root
-    command: chown 1001 /home/dicom
-    restart: "no"
-
 networks:
   local:
   remote:
-  pacs:
-  monitoring:
-  pflink:
 
 volumes:
   chris_files:
   db_data:
-  orthanc:
-  pfdcm:
-  grafana_data:
-  openobserve_data:
-  pflink-db-data:
