@@ -36,6 +36,33 @@ _ChRIS Ultron Back End_ (sometimes also _ChRIS Underlying Back End_) or simply _
 
 Consult this page for instructions on starting _CUBE_ in either _development_ or _production_ contexts. For documentation/overview/background, please see the [documention](https://github.com/FNNDSC/ChRIS_docs).
 
+### TL;DR
+
+#### If you read nothing else on this page, and just want to get an instance of the ChRIS backend services up and running with no mess, no fuss:
+
+##### The real TL;DR
+
+The all in one copy/paste line to drop into your terminal (assuming of course you are in the repo directory and have the preconditions met):
+
+```bash
+docker swarm leave --force && docker swarm init --advertise-addr 127.0.0.1 &&  \
+./unmake.sh && sudo rm -fr CHRIS_REMOTE_FS && rm -fr CHRIS_REMOTE_FS &&        \
+./make.sh -U -I -i
+```
+
+This will start a **bare bones** _CUBE_. This _CUBE_ will **NOT** have any plugins installed. To install a set of plugins, do
+
+```bash
+./postscript.sh
+```
+
+##### Slightly longer but still short TL;DR
+
+Start a local Docker Swarm cluster if not already started:
+
+```bash
+docker swarm init --advertise-addr 127.0.0.1
+```
 
 ### Preconditions
 
