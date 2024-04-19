@@ -28,6 +28,7 @@ is a component of the _ChRIS_ system.
 
 The core backend service for the ChRIS distributed software platform, also known by the anacronym _CUBE_. Internally the service is implemented as a Django-PostgreSQL project offering a [collection+json](http://amundsen.com/media-types/collection/) REST API. Important ancillary components include the ``pfcon`` and ``pman`` file transfer and remote process management microservices.
 
+
 ## ChRIS development, testing and deployment
 
 ### Abstract
@@ -36,33 +37,6 @@ _ChRIS Ultron Back End_ (sometimes also _ChRIS Underlying Back End_) or simply _
 
 Consult this page for instructions on starting _CUBE_ in either _development_ or _production_ contexts. For documentation/overview/background, please see the [documention](https://github.com/FNNDSC/ChRIS_docs).
 
-### TL;DR
-
-#### If you read nothing else on this page, and just want to get an instance of the ChRIS backend services up and running with no mess, no fuss:
-
-##### The real TL;DR
-
-The all in one copy/paste line to drop into your terminal (assuming of course you are in the repo directory and have the preconditions met):
-
-```bash
-docker swarm leave --force && docker swarm init --advertise-addr 127.0.0.1 &&  \
-./unmake.sh && sudo rm -fr CHRIS_REMOTE_FS && rm -fr CHRIS_REMOTE_FS &&        \
-./make.sh -U -I -i
-```
-
-This will start a **bare bones** _CUBE_. This _CUBE_ will **NOT** have any plugins installed. To install a set of plugins, do
-
-```bash
-./postscript.sh
-```
-
-##### Slightly longer but still short TL;DR
-
-Start a local Docker Swarm cluster if not already started:
-
-```bash
-docker swarm init --advertise-addr 127.0.0.1
-```
 
 ### Preconditions
 
@@ -92,6 +66,58 @@ Currently tested platforms:
 
 Consult this page https://docs.docker.com/engine/install/linux-postinstall/
 
+### TL;DR
+
+#### If you read nothing else on this page, and just want to get an instance of the ChRIS backend services up and running with no mess, no fuss:
+
+##### The real TL;DR
+
+The all in one copy/paste line to drop into your terminal (assuming of course you are in the repo directory and have the preconditions met):
+
+```bash
+docker swarm leave --force && docker swarm init --advertise-addr 127.0.0.1 &&  \
+./unmake.sh && sudo rm -fr CHRIS_REMOTE_FS && rm -fr CHRIS_REMOTE_FS &&        \
+./make.sh -U -I -i
+```
+
+This will start a **bare bones** _CUBE_. This _CUBE_ will **NOT** have any plugins installed. To install a set of plugins, do
+
+```bash
+./postscript.sh
+```
+
+##### Slightly longer but still short TL;DR
+
+Start a local Docker Swarm cluster if not already started:
+
+```bash
+docker swarm init --advertise-addr 127.0.0.1
+```
+
+Get the source code from CUBE repo:
+
+```bash
+git clone https://github.com/FNNDSC/ChRIS_ultron_backend
+cd ChRIS_ultron_backend
+```
+
+Run full CUBE instantiation with tests:
+```bash
+./unmake.sh ; sudo rm -fr CHRIS_REMOTE_FS; rm -fr CHRIS_REMOTE_FS; ./make.sh
+```
+
+Or skip unit and integration tests and the intro:
+```bash
+./unmake.sh ; sudo rm -fr CHRIS_REMOTE_FS; rm -fr CHRIS_REMOTE_FS; ./make.sh -U -I -s
+```
+
+Once the system is "up" you can add more compute plugins to the ecosystem:
+
+```bash
+./postscript.sh
+```
+
+The resulting CUBE instance uses the default Django development server and therefore is not suitable for production.
 
 ### Production deployments
 
